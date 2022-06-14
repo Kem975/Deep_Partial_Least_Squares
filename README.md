@@ -2,13 +2,15 @@
 
 
 ## Info session 
-other attached packages:
-R version 4.1.2 (2021-11-01)
+
+### R version 4.1.2 (2021-11-01)
+
+### other attached packages:
  [1] xts_0.12.1           zoo_1.8-10           covFactorModel_0.1.0 glmnet_4.1-2        
  [5] Matrix_1.3-4         latex2exp_0.5.0      ggplot2_3.3.5        corrplot_0.90       
  [9] pls_2.8-0            tensorflow_2.7.0     keras_2.7.0         
 
-loaded via a namespace (and not attached):
+### loaded via a namespace (and not attached):
  [1] Rcpp_1.0.8.3         compiler_4.1.2       pillar_1.7.0         iterators_1.0.13    
  [5] base64enc_0.1-3      tools_4.1.2          zeallot_0.1.0        jsonlite_1.8.0      
  [9] lifecycle_1.0.1      tibble_3.1.6         gtable_0.3.0         lattice_0.20-45     
