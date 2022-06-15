@@ -1,0 +1,9 @@
+name: DPLS
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9.7
+  - numpy=1.20.3
+  - keras=2.8.0
+  - tensorflow=2.8.0
