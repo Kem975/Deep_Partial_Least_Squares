@@ -1,4 +1,4 @@
-# Deep_Partial_Least_Squares
+# Deep Partial Least Squares
 Matthew Dixon, Nick Polson, and Kemen Goicoechea, Deep Partial Least Squares for Empirical Asset Pricing, 2022.
 This code accompanies the paper: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4137647
 
@@ -11,7 +11,7 @@ The code is a working repository, still being tested, and subject to further cha
 
 ### R Packages
  - Once the anaconda environment is linked, you can download the Packrat packages bundle R here: https://www.dropbox.com/s/bahii8c5h2as0ip/DPLS-2022-06-14.tar.gz?dl=0
- - Then you use patrack::unbundle and patrack::restore to get the packages
+ - Then you use ```packrat::unbundle``` and ```packrat::restore``` to get the packages
 
 
 ## Source Code
