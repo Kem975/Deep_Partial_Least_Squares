@@ -11,7 +11,7 @@ Matthew Dixon, Nick Polson, and Kemen Goicoechea, Deep Partial Least Squares for
  - Then you use patrack::unbundle and patrack::restore to get the packages
 
 ## Source Code
-The repository contains one main file: main.R, that calls the functions in other files.
+The repository contains one main file: main.R, that calls functions in other files.
 
 ## Data
 The factor data has been collected from a financial data vendor and santized to avoid violation of data licensing agreement and non-commercial utility. The data, for non-commercial use only, can be downloaded from: https://www.dropbox.com/s/4o86a3p2n7kawst/ScaledData.RData?dl=0
