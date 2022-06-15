@@ -1,7 +1,8 @@
 # Deep_Partial_Least_Squares
 Matthew Dixon, Nick Polson, and Kemen Goicoechea, Deep Partial Least Squares for Empirical Asset Pricing, 2022.
-
 This code accompanies the paper: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4137647
+
+The code is a working repository, still being tested, and subject to further change.
 
 ## Configuration 
 ### Anaconda
@@ -12,8 +13,14 @@ This code accompanies the paper: https://papers.ssrn.com/sol3/papers.cfm?abstrac
  - Once the anaconda environment is linked, you can download the Packrat packages bundle R here: https://www.dropbox.com/s/bahii8c5h2as0ip/DPLS-2022-06-14.tar.gz?dl=0
  - Then you use patrack::unbundle and patrack::restore to get the packages
 
+
 ## Source Code
-The repository contains one main file: main.R, that calls functions in other files.
+The repository contains one main file: main.R, which calls functions in other files.
+This code contains 4 types of models: LASSO (glmnet package), PLS (pls package), Neural Network (keras), Deep Partial Least Squares (pls + keras).
+
+Trained models for NN and DPLS are in the data folder. However, these are Tensorflow Python saved models and may not work across different CPU architectures.
+Tensorflow saved models are needed to use automatic differentiation. If you do not wish to use this functionnality, Keras saved models are totally fine.
+
 
 ## Data
 The factor data has been collected from a financial data vendor and santized to avoid violation of data licensing agreement and non-commercial utility. The data, for non-commercial use only, can be downloaded from: https://www.dropbox.com/s/4o86a3p2n7kawst/ScaledData.RData?dl=0
