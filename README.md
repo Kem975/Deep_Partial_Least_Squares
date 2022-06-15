@@ -1,6 +1,8 @@
 # Deep_Partial_Least_Squares
 Matthew Dixon, Nick Polson, and Kemen Goicoechea, Deep Partial Least Squares for Empirical Asset Pricing, 2022.
 
+This code accompanies the paper: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4137647
+
 ## Configuration 
 ### Anaconda
  - Anaconda environment configuration is in DPLS.yml
