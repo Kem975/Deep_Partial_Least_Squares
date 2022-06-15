@@ -19,7 +19,7 @@ The repository contains one main file: main.R, which calls functions in other fi
 This code contains 4 types of models: LASSO (glmnet package), PLS (pls package), Neural Network (keras), Deep Partial Least Squares (pls + keras).
 
 Trained models for NN and DPLS are in the data folder. However, these are Tensorflow Python saved models and may not work across different CPU architectures.
-Tensorflow saved models are needed to use automatic differentiation. If you do not wish to use this functionnality, Keras saved models are totally fine.
+Tensorflow saved models are needed to use automatic differentiation. If you do not wish to use this functionnality, you can train the models using RKeras. However this will take approximately one hour to perform across all 330 periods.
 
 
 ## Data
