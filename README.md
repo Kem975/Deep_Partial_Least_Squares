@@ -10,7 +10,7 @@ The code is a working repository, still being tested, and subject to further cha
 
 ### R Packages
  - Install conda 4.12 or a later version
- - Create the conda virtual environment by typing ```conda env create -f DPLS.yml``` 
+ - Create the conda virtual environment by typing ```conda env create -f DPLS.yml```
  - Link it to R: In RStudio: Tools > Global Options > Python > Select > Conda Environment
  - Once the anaconda environment is linked, you can download the Packrat packages bundle R here: https://www.dropbox.com/s/bahii8c5h2as0ip/DPLS-2022-06-14.tar.gz?dl=0
  - Then you use ```packrat::unbundle``` and ```packrat::restore``` to get the packages
