@@ -33,19 +33,19 @@ r2_is = function(t_0, T, Y_hat_is_list, Yhat_LASSO_is_list, Y_hat_is_list_NN, Y_
   x <- 1:length(r2.vect_is)
   df.toplot_r2 <- data.frame(x)
   ggplot(df.toplot_r2, aes(x)) + 
-    geom_line(aes(y=r2.vect_is, color="1"), size=0.8) + 
-    geom_line(aes(y=r2.lasso_vect_is, color="2"), size=0.8) +
-    geom_line(aes(y=r2.nn_vect_is, color="3"), size=0.8) +
-    geom_line(aes(y=r2.pls_vect_is, color="4"), size=0.8) +
+    geom_line(aes(y=r2.lasso_vect_is, color="1"), size=0.8) +
+    geom_line(aes(y=r2.nn_vect_is, color="2"), size=0.8) +
+    geom_line(aes(y=r2.pls_vect_is, color="3"), size=0.8) +
+    geom_line(aes(y=r2.vect_is, color="4"), size=0.3) + 
     scale_colour_manual(name = "Legend", 
-                        values=c("cadetblue3", "tomato", "orange", "green"), 
-                        labels = c(label.is, lasso.label.is, nn.label.is, pls.label.is)) + 
+                        values=c("tomato", "orange", "cadetblue3", "black"), 
+                        labels = c(lasso.label.is, nn.label.is, pls.label.is, label.is)) + 
     scale_x_continuous(breaks = seq(t_0+1,T,T/20), labels = dates[seq(t_0+1,T,T/20)]) + 
     theme(axis.text.x = element_text(angle = 60, vjust = 1.2, hjust=1.2), legend.position = c(0.13, 0.2), legend.background = element_rect(fill = "white", color = "black")) +
     ylim(-1, 1) +
     labs(y = TeX("$R^2$ In Sample"), x="")
-  ggsave(file="../png/In_sample_R2_tuned.png", width=10, height=5, dpi=400)
-  ggsave(file="../pdf/In_sample_R2_tuned.pdf", width=10, height=5)
+  ggsave(file="../figure/png/In_sample_R2.png", width=10, height=5, dpi=400)
+  ggsave(file="../figure/pdf/In_sample_R2.pdf", width=10, height=5)
 }
 
 
@@ -79,18 +79,18 @@ r2_oos = function(t_0, T, Y_hat_oos_list, Yhat_LASSO_oos_list, Y_hat_oos_list_NN
   x <- 1:length(r2.vect_oos)
   df.toplot_r2 <- data.frame(x)
   ggplot(df.toplot_r2, aes(x)) + 
-    geom_line(aes(y=r2.vect_oos, color="1"), size=0.8) + 
-    geom_line(aes(y=r2.lasso_vect_oos, color="2"), size=0.8) +
-    geom_line(aes(y=r2.nn_vect_oos, color="3"), size=0.8) +
-    geom_line(aes(y=r2.pls_vect_oos, color="4"), size=0.8) +
+    geom_line(aes(y=r2.lasso_vect_oos, color="1"), size=0.8) +
+    geom_line(aes(y=r2.nn_vect_oos, color="2"), size=0.8) +
+    geom_line(aes(y=r2.pls_vect_oos, color="3"), size=0.8) +
+    geom_line(aes(y=r2.vect_oos, color="4"), size=0.3) + 
     scale_colour_manual(name = "Legend", 
-                        values=c("cadetblue3","tomato", "orange", "green"), 
-                        labels = c(label.oos, lasso.label.oos, nn.label.oos, pls.label.oos)) + 
+                        values=c("tomato", "orange","cadetblue3","black"), 
+                        labels = c(lasso.label.oos, nn.label.oos, pls.label.oos, label.oos)) + 
     scale_x_continuous(breaks = seq(t_0+1,T,T/20), labels = dates[seq(t_0+1,T,T/20)]) + 
     theme(axis.text.x = element_text(angle = 60, vjust = 1.2, hjust=1.2), legend.position = c(0.13, 0.8), legend.background = element_rect(fill = "white", color = "black")) +
     ylim(-1, 1) +
     labs(y = TeX("$R^2$ Out of sample"), x="") 
-  ggsave(file="../png/Out_of_sample_r2_tuned.png", width=10, height=5, dpi=400)
-  ggsave(file="../pdf/Out_of_sample_r2_tuned.pdf", width=10, height=5)
+  ggsave(file="../figure/png/Out_of_sample_r2.png", width=10, height=5, dpi=400)
+  ggsave(file="../figure/pdf/Out_of_sample_r2.pdf", width=10, height=5)
   
 }

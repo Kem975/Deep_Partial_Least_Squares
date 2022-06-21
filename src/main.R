@@ -39,6 +39,7 @@ df.data$X <- c()
 # This next line takes approximately ten minutes to execute
 # list.data <- get_all_data(df.data, dates) # Rescaling of the data
 list.data<-readRDS("../data/ScaledData.RData")
+list.data<-readRDS("../../Save/data/ScaledData.RData")
 
 Xs_train <- list.data[[1]]
 Ys_train <- list.data[[2]]
@@ -52,8 +53,8 @@ dates    <- list.data[[5]]
 
 ### --------------- PARAMETERS --------------- ###
 
-t_0 <- 1 # Initial period (max=331)
-T <- 330 # Number of periods (max=331)
+t_0 <- 211 # Initial period (max=331)
+T <- 120 # Number of periods (max=331)
 
 
 ### --------------- LASSO TRAINING --------------- ###
@@ -117,7 +118,7 @@ MSE_is(t_0, T, Y_hat_is_list, Yhat_LASSO_is_list, Y_hat_is_list_NN, Y_hat_PLS_is
 MSE_oos(t_0, T, Y_hat_oos_list, Yhat_LASSO_oos_list, Y_hat_oos_list_NN, Y_hat_PLS_oos_list, Ys_test, dates)
 
 
-### --------------- PLOT R? --------------- ###
+### --------------- PLOT R2 --------------- ###
 
 r2_is(t_0, T, Y_hat_is_list, Yhat_LASSO_is_list, Y_hat_is_list_NN, Y_hat_PLS_is_list, Ys_train, dates)
 r2_oos(t_0, T, Y_hat_oos_list, Yhat_LASSO_oos_list, Y_hat_oos_list_NN, Y_hat_PLS_oos_list, Ys_test, dates)
@@ -131,21 +132,21 @@ IR(t_0, T, Y_hat_oos_list, Yhat_LASSO_oos_list, Y_hat_oos_list_NN, Y_hat_PLS_oos
 ### --------------- Table  --------------- ###
 # Calculate the Table 1 of the paper
 
-Ks=c(1,2,3,4,5,6,7,8,9,10)
+Ks=seq(1,15)
 
 
 table.DPLS(Ks, T, t_0, port_size=40, Uhat_is_list, Uhat_oos_list, Ys_train, Ys_test, comp.num_list)
 table.PLS(Ks, T, t_0, port_size=40, Xs_train, Xs_test,  comp_num_list_PLS, bTest=FALSE, bPortfolio=FALSE)
-table.PLS(Ks, 330,  t_0, port_size=40, Xs_train, Xs_test, comp_num_list_PLS, bTest=FALSE, bPortfolio=TRUE)
-table.PLS(Ks, 330, 1, port_size=40, Xs_train, Xs_test, comp_num_list_PLS, bTest=TRUE, bPortfolio=FALSE)
-table.PLS(Ks, 330, 1, port_size=40, Xs_train, Xs_test, comp_num_list_PLS, bTest=TRUE, bPortfolio=TRUE)
+table.PLS(Ks, T, t_0, port_size=40, Xs_train, Xs_test, comp_num_list_PLS, bTest=FALSE, bPortfolio=TRUE)
+table.PLS(Ks, T, t_0, port_size=40, Xs_train, Xs_test, comp_num_list_PLS, bTest=TRUE, bPortfolio=FALSE)
+table.PLS(Ks, T, t_0, port_size=40, Xs_train, Xs_test, comp_num_list_PLS, bTest=TRUE, bPortfolio=TRUE)
 
-df.table <- table(Ks, 330, t_0=1, port_size=40, df.data, 
+df.table <- table(Ks, T, t_0, port_size=40, df.data, 
                   Uhat_is_list, Uhat_oos_list, Xs_train, Xs_test, Ys_train, Ys_test, comp.num_list)
 
 
-table.PCA(Ks, 330, 1, port_size=40, df.data, dates, bPortfolio=FALSE)
-table.PCA(Ks, 330, 1, port_size=40, df.data, dates, bPortfolio=TRUE)
+table.PCA(Ks, T, t_0, port_size=40, df.data, dates, bPortfolio=FALSE)
+table.PCA(Ks, T, t_0, port_size=40, df.data, dates, bPortfolio=TRUE)
 
 
 

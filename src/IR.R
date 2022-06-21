@@ -77,7 +77,7 @@ IR <- function(t_0, T, Y_hat_oos_list, Yhat_LASSO_oos_list, Y_hat_oos_list_NN, Y
     theme(legend.position = c(0.9, 0.4), legend.background = element_rect(fill = "white", color = "black"))
     
   
-  ggsave(file="../png/IR_full_date_tuned.png", width=10, height=5, dpi=800)
-  ggsave(file="../pdf/IR_full_date_tuned.pdf", width=10, height=5)
+  ggsave(file="../figure/png/IR_full_date_tuneddqzdqz.png", width=10, height=5, dpi=800)
+  ggsave(file="../figure/pdf/IR_full_date_tuneddqdqz.pdf", width=10, height=5)
   
 }
