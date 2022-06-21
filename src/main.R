@@ -39,7 +39,6 @@ df.data$X <- c()
 # This next line takes approximately ten minutes to execute
 # list.data <- get_all_data(df.data, dates) # Rescaling of the data
 list.data<-readRDS("../data/ScaledData.RData")
-list.data<-readRDS("../../Save/data/ScaledData.RData")
 
 Xs_train <- list.data[[1]]
 Ys_train <- list.data[[2]]
@@ -73,7 +72,7 @@ comp_num_list_PLS <- list.PLS[[3]]
 
 ### --------------- NN LOADING --------------- ###
 
-list.NN <- load_NN(t_0, T, Xs_train, Xs_test, dates, bRetrain=FALSE, bSensitivities=FALSE)
+list.NN <- load_NN(t_0, T, Xs_train, Xs_test, dates, bRetrain=FALSE, bSensitivities=TRUE)
 Y_hat_is_list_NN <- list.NN[[1]]
 Y_hat_oos_list_NN <- list.NN[[2]]
 betas_NN <- list.NN[[3]]
@@ -82,7 +81,7 @@ betas_interact_NN <- list.NN[[4]]
 
 ### --------------- DPLS LOADING --------------- ###
 
-list.DPLS <-load_DPLS(t_0, T, Xs_train, Xs_test, dates, bRetrain=FALSE, bSensitivities=FALSE)
+list.DPLS <-load_DPLS(t_0, T, Xs_train, Xs_test, dates, bRetrain=FALSE, bSensitivities=TRUE)
 Uhat_oos_list <- list.DPLS[[1]]
 Uhat_is_list <- list.DPLS[[2]]
 Y_hat_oos_list <- list.DPLS[[3]]
@@ -99,11 +98,11 @@ num_components(t_0, T, comp.num_list, dates)
 
 ### --------------- PLOT Sensitivities --------------- ###
 
-plot_sensitivities(T, betas_NN, "NN_")
-plot_sensitivities(T, betas_DPLS, "DPLS_")
+plot_sensitivities(T, betas_NN, "NN_increasing")
+plot_sensitivities(T, betas_DPLS, "DPLS_increasing")
 
-plot_interaction(T, betas_interact_NN, num_to_plot= 30, "NN_")
-plot_interaction(T, betas_interact_DPLS, num_to_plot= 30, "DPLS_")
+plot_interaction(T, betas_interact_NN, num_to_plot= 30, "NN_increasing")
+plot_interaction(T, betas_interact_DPLS, num_to_plot= 30, "DPLS_increasing")
 
 
 ### --------------- PLOT L_infinity --------------- ###

@@ -15,24 +15,25 @@ plot_sensitivities <- function(T, betas_matrix, name){
   ggplot(df.betas, aes(x=reorder(factor, value), y = value)) + geom_bar(stat = "identity", fill="dodgerblue1") + 
     labs(x="Factor", y="Sensitivity") + coord_flip() 
   
-  ggsave(file=sprintf("figure/png/sensitivity_%s.png", name), width=5.5, height=7, dpi=800)
-  ggsave(file=sprintf("figure/pdf/sensitivity_%s.pdf", name), width=5.5, height=7)
+  ggsave(file=sprintf("../figure/png/sensitivity_%s.png", name), width=5.5, height=7, dpi=800)
+  ggsave(file=sprintf("../figure/pdf/sensitivity_%s.pdf", name), width=5.5, height=7)
   
   
+  #increasing <- order(betas_matrix_median)
   
-  betas_sorted <- apply(betas_matrix, 2, sort)
-  num_dates <- T/4
-  betas_sorted <- rbind(betas_sorted[1:num_dates,], betas_sorted[((T-num_dates):T),])
+  #betas_sorted <- apply(betas_matrix, 2, sort)
+  #num_dates <- T/4
+  #betas_sorted <- betas_matrix[,increasing] #rbind(betas_sorted[1:num_dates,], betas_sorted[((T-num_dates):T),])
   
   df.betas_boxplot <- data.frame()
-  for (i in 1:dim(betas_sorted)[1]){
-    df.betas_boxplot <- rbind(df.betas_boxplot, data.frame(value=betas_sorted[i,], factor=factors_names))
+  for (i in 1:dim(betas_matrix)[1]){
+    df.betas_boxplot <- rbind(df.betas_boxplot, data.frame(value=betas_matrix[i,], factor=factors_names))
   }
   
-  ggplot(df.betas_boxplot, aes(x=factor, y = value)) + geom_boxplot() +
+  ggplot(df.betas_boxplot, aes(x=reorder(factor,-value), y = value)) + geom_boxplot() +
     theme(axis.text.x = element_text(angle = 60, vjust = 1.1, hjust=1.2)) + labs(x="Factor", y="Sensitivity")
-  ggsave(file=sprintf("figure/png/sensitivity_box_plot_%s.png", name), width=10, height=5, dpi=800)
-  ggsave(file=sprintf("figure/pdf/sensitivity_box_plot_%s.pdf", name), width=10, height=5)
+  ggsave(file=sprintf("../figure/png/sensitivity_box_plot_%s.png", name), width=10, height=5, dpi=800)
+  ggsave(file=sprintf("../figure/pdf/sensitivity_box_plot_%s.pdf", name), width=10, height=5)
 }
 
 
@@ -66,29 +67,33 @@ plot_interaction <- function(T, betas_interact_matrix, num_to_plot= 30, name){
   
   ggplot(df.interaction_to_plot, aes(x=reorder(factor, value), y = value)) + geom_bar(stat = "identity", fill="dodgerblue1") + 
     labs(x="Factor", y="Sensitivity") + coord_flip() 
-  ggsave(file=sprintf("figure/png/interaction_axis%s.png",name), width=5.5, height=7, dpi=800)
-  ggsave(file=sprintf("figure/pdf/interaction_axis%s.pdf",name), width=5.5, height=7)
+  ggsave(file=sprintf("../figure/png/interaction_%s.png",name), width=5.5, height=7, dpi=800)
+  ggsave(file=sprintf("../figure/pdf/interaction_%s.pdf",name), width=5.5, height=7)
   
   
   
-  betas_interact_sorted <- apply(all_interactions, 2, sort)
-  num_dates <- T/4
-  betas_interact_sorted <- rbind(betas_interact_sorted[1:num_dates,], betas_interact_sorted[((T-num_dates):T),])
-
+  #betas_interact_sorted <- apply(all_interactions, 2, sort)
+  #num_dates <- T/4
+  #betas_interact_sorted <- rbind(betas_interact_sorted[1:num_dates,], betas_interact_sorted[((T-num_dates):T),])
+  
+  increasing_interaction <- order(all_interactions_median)
+  
+  all_interactions_ordered <- all_interactions[,increasing_interaction] 
+  
   num_to_plot <- 30
   
-  order_min <- order(betas_interact_sorted[1,])[1:num_to_plot]
-  order_max <- order(-betas_interact_sorted[dim(betas_interact_sorted)[1],])[1:num_to_plot]
+  order_min <- order(all_interactions_median)[1:num_to_plot]
+  order_max <- order(-all_interactions_median)[1:num_to_plot]
   
   df.betas_interact_boxplot <- data.frame()
-  for (i in 1:dim(betas_interact_sorted)[1]){
-    df.betas_interact_boxplot <- rbind(df.betas_interact_boxplot, data.frame(value=betas_interact_sorted[i,][order_min], factor=interaction_names[order_min]))
-    df.betas_interact_boxplot <- rbind(df.betas_interact_boxplot, data.frame(value=betas_interact_sorted[i,][order_max], factor=interaction_names[order_max]))
+  for (i in 1:dim(all_interactions)[1]){
+    df.betas_interact_boxplot <- rbind(df.betas_interact_boxplot, data.frame(value=all_interactions[i,][order_min], factor=interaction_names[order_min]))
+    df.betas_interact_boxplot <- rbind(df.betas_interact_boxplot, data.frame(value=all_interactions[i,][order_max], factor=interaction_names[order_max]))
   }
   
-  ggplot(df.betas_interact_boxplot, aes(x=factor, y = value)) + geom_boxplot() +
+  ggplot(df.betas_interact_boxplot, aes(x=reorder(factor,-value), y = value)) + geom_boxplot() +
     theme(axis.text.x = element_text(angle = 60, vjust = 1.1, hjust=1.2)) + labs(x="Factor", y="Sensitivity")
-  ggsave(file=sprintf("figure/png/interaction_box_plot%s.png", name), width=10, height=5, dpi=800)
-  ggsave(file=sprintf("figure/pdf/interaction_box_plot%s.pdf", name), width=10, height=5)
+  ggsave(file=sprintf("../figure/png/interaction_box_plot%s.png", name), width=10, height=5, dpi=800)
+  ggsave(file=sprintf("../figure/pdf/interaction_box_plot%s.pdf", name), width=10, height=5)
   
 }
