@@ -12,6 +12,9 @@ The code is a working repository, still being tested, and subject to further cha
 
 ### R Packages
 - Link the anaconda environment to R: In RStudio: Tools > Global Options > Python > Select > Conda Environment
+- Download this ```packrat.zip``` file: https://www.dropbox.com/s/22s16fdetusplxq/packrat.zip?dl=0
+- Unzip it in the ```src``` folder
+- Run the first 3 lines of ```src/main.r``` to obtain the R packages
 
 ## Source Code
 The repository contains one main file: main.R, which calls functions in other files.
