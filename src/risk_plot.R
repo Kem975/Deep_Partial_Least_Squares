@@ -3,7 +3,7 @@
 df.histo_dicrete_DPLS_40 <- data.frame()
 return_histo_predicted_DPLS_40 <- c()
 return_histo_DPLS_40 <- c() 
-max_k <- 49
+max_k <- 40
 t_0 <- 211
 T <- 120
 for (i in 1:T){ #(length(dates)-1)
