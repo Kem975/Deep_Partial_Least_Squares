@@ -9,33 +9,30 @@
 # Input: Values of k, t_0, T, portfolio size, Y_hat calculated by the models, U_hat calculated for DPLS, X_trains, X_tests and the observed Y_test
 # Output: Figure of the L_infinity norm over time with the average in the legend
 
-table <- function(Ks, T, t_0, port_size, df.data, Uhat_is_list, Uhat_oos_list, x_train_list, x_test_list, y_train_list, y_test_list, comp.num_list){
-  dates <- unique(as.Date(df.data$date))
-  dates <- na.omit(dates)
-  
-  df.table <- matrix(0, nrow=10, ncol=length(Ks))
+table <- function(T, t_0, port_size, Uhat_is_list, Uhat_oos_list, x_train_list, x_test_list, y_train_list, y_test_list, comp.num_list, dates){
+  df.table <- matrix(0, nrow=10, ncol=15)
   
   print("PCA")
   
-  df.table[1,] <- table.PCA(Ks, T, t_0, port_size, df.data, dates, bPortfolio=FALSE)
-  df.table[2,] <- table.PCA(Ks, T, t_0, port_size, df.data, dates, bPortfolio=TRUE)
+  df.table[1,] <- table.PCA(T, t_0, port_size=40, Xs_train, dates, bPortfolio=FALSE)
+  df.table[2,] <- table.PCA(T, t_0, port_size=40, Xs_train, dates, bPortfolio=TRUE)
   
   print("PLS")
   
-  df.table[3,] <- table.PLS(Ks, T, t_0, port_size, x_train_list, x_test_list,  bTest=FALSE, bPortfolio=FALSE)
-  df.table[4,] <- table.PLS(Ks, T, t_0, port_size, x_train_list, x_test_list,  bTest=FALSE, bPortfolio=TRUE)
-  df.table[5,] <- table.PLS(Ks, T, t_0, port_size, x_train_list, x_test_list,  bTest=TRUE, bPortfolio=FALSE)
-  df.table[6,] <- table.PLS(Ks, T, t_0, port_size, x_train_list, x_test_list,  bTest=TRUE, bPortfolio=TRUE)
+  df.table[3,] <- table.PLS(T, t_0, port_size, x_train_list, x_test_list,  bTest=FALSE, bPortfolio=FALSE)
+  df.table[4,] <- table.PLS(T, t_0, port_size, x_train_list, x_test_list,  bTest=FALSE, bPortfolio=TRUE)
+  df.table[5,] <- table.PLS(T, t_0, port_size, x_train_list, x_test_list,  bTest=TRUE, bPortfolio=FALSE)
+  df.table[6,] <- table.PLS(T, t_0, port_size, x_train_list, x_test_list,  bTest=TRUE, bPortfolio=TRUE)
   
   print("DPLS")
   
-  list_table_DPLS <- table.DPLS(Ks, T, t_0, port_size=40, Uhat_is_list, Uhat_oos_list, y_train_list, y_test_list, comp.num_list)
-  df.table[7,] <- list_table_DPLS[[1]]
-  df.table[8,] <- list_table_DPLS[[2]]
-  df.table[9,] <- list_table_DPLS[[3]]
-  df.table[10,] <- list_table_DPLS[[4]]
+  df.table[7,] <- table.DPLS(T, t_0, port_size=40, Uhat_is_list, Uhat_oos_list, Ys_train, Ys_test, comp.num_list, bTest=FALSE, bPortfolio=FALSE)
+  df.table[8,] <- table.DPLS(T, t_0, port_size=40, Uhat_is_list, Uhat_oos_list, Ys_train, Ys_test, comp.num_list, bTest=FALSE, bPortfolio=TRUE)
+  df.table[9,] <- table.DPLS(T, t_0, port_size=40, Uhat_is_list, Uhat_oos_list, Ys_train, Ys_test, comp.num_list, bTest=TRUE, bPortfolio=FALSE)
+  df.table[10,] <- table.DPLS(T, t_0, port_size=40, Uhat_is_list, Uhat_oos_list, Ys_train, Ys_test, comp.num_list, bTest=TRUE, bPortfolio=TRUE)
+
   
-  colnames(df.table) <- c("1",  "2",  "3",  "4",  "5", "10", "20", "30", "40")
+  colnames(df.table) <- seq(1,15)
   rownames(df.table) <- c("PCA all (is)","PCA portfolio (is)","PLS all (is)", "PLS portfolio (is)", "PLS all (oos)", "PLS portfolio (oos)",
                           "DPLS all (is)", "DPLS portfolio (is)", "DPLS all (oos)", "DPLS portfolio (oos)")
   return(df.table)
@@ -45,23 +42,15 @@ table <- function(Ks, T, t_0, port_size, df.data, Uhat_is_list, Uhat_oos_list, x
 ### --------------- DPLS --------------- ###
 
 
-table.DPLS <- function(Ks, T, t_0, port_size, Uhat_is_list, Uhat_oos_list, y_train_list, y_test_list, comp.num_list){
-  rsq.DPLS_port_is <- rep(0,max(comp.num_list))
-  rsq.DPLS_port_oos <- rep(0,max(comp.num_list))
-  rsq.DPLS_is <- rep(0,max(comp.num_list))
-  rsq.DPLS_oos <- rep(0,max(comp.num_list))
+table.DPLS <- function(T, t_0, port_size, Uhat_is_list, Uhat_oos_list, y_train_list, y_test_list, comp.num_list, bTest, bPortfolio){
+  rsq.DPLS <- rep(0,max(comp.num_list))
   
-  rss_is <- rep(0,max(comp.num_list))
-  tss_is <- rep(0,max(comp.num_list))
-  rss_oos <- rep(0,max(comp.num_list))
-  tss_oos <- rep(0,max(comp.num_list))
-  
-  r_p_is <- matrix(0, T, max(comp.num_list))
-  r_hat_p_is <- matrix(0, T, max(comp.num_list))
-  r_p_oos <- matrix(0, T,max(comp.num_list))
-  r_hat_p_oos <- matrix(0, T, max(comp.num_list))
-  
-  
+  rss <- rep(0,max(comp.num_list))
+  tss <- rep(0,max(comp.num_list))
+
+  r_p <- matrix(0, T, max(comp.num_list))
+  r_hat_p <- matrix(0, T, max(comp.num_list))
+
   
   for (t in 1:T){
     
@@ -74,33 +63,26 @@ table.DPLS <- function(Ks, T, t_0, port_size, Uhat_is_list, Uhat_oos_list, y_tra
         Y_hat_oos <- rowMeans(Uhat_oos_list[[t]][,1:k])
       }
       
-      # Portfolio IS
-      idx_is <- order(Y_hat_is)[length(Y_hat_is):1]
-      w_is <- rep(0,length(Y_hat_is))
-      w_is[idx_is[1:port_size]] <- 1/port_size
-      r_p_is[t,k] <- array(t(w_is)%*% y_train_list[[t_0+t]])
-      r_hat_p_is[t,k] <- array(t(w_is)%*%Y_hat_is)
+      if(bTest){
+        Y_hat <- Y_hat_oos
+        Y <- y_test_list[[t_0+t]]
+      }
+      else{
+        Y_hat <- Y_hat_is
+        Y <- y_train_list[[t_0+t]]
+      }
       
-      # All stocks IS
-      rss_is[k] <- rss_is[k] + sum((Y_hat_is - y_train_list[[t_0+t]])^2)  # Save the sum of rss in-sample for each k
-      
-      # Portfolio OOS
-      idx_oos <- order(Y_hat_oos)[length(Y_hat_oos):1]
-      w_oos <- rep(0,length(Y_hat_oos))
-      w_oos[idx_oos[1:port_size]] <- 1/port_size
-      #r_p_oos[t,k] <- array(t(w_oos)%*%y_test_list[[t_0+t]])
-      #r_hat_p_oos[t,k] <- array(t(w_oos)%*%Y_hat_oos)
-      r_p_oos[t,k] <- array(t(w_oos)%*%y_test_list[[t_0+t]])
-      r_hat_p_oos[t,k] <- array(t(w_oos)%*%Y_hat_oos)
-      
-      #modelmetrics(y,yhat)
-      
-      # All stocks OOS
-      rss_oos[k] <- rss_oos[k] + sum((Y_hat_oos - y_test_list[[t_0+t]])^2) # Save the sum of rss out-of-sample for each k
-      
-      # Total Sum of Squares
-      tss_is[k] <- tss_is[k] + sum((y_train_list[[t_0+t]]-mean(y_train_list[[t_0+t]]))^2) # Add the in-sample TSS for this date 
-      tss_oos[k] <- tss_oos[k] + sum((y_test_list[[t_0+t]]-mean(y_test_list[[t_0+t]]))^2) # Add the out-of-sample TSS for this date
+      if(bPortfolio){
+        idx <- order(Y_hat)[length(Y_hat):1]
+        w <- rep(0,length(Y_hat))
+        w[idx[1:port_size]] <- 1/port_size
+        r_p[t,k] <- array(t(w)%*% Y)
+        r_hat_p[t,k] <- array(t(w)%*%Y_hat)
+      }
+      else{
+        rss[k] <- rss[k] + sum((Y_hat - Y)^2)  # Save the sum of rss in-sample for each k
+        tss[k] <- tss[k] + sum((Y - mean(Y))^2) # Add the in-sample TSS for this date 
+      }
     }
     
   }
@@ -109,20 +91,17 @@ table.DPLS <- function(Ks, T, t_0, port_size, Uhat_is_list, Uhat_oos_list, y_tra
   #print(r_p_oos)
   for (k in 1:max(comp.num_list)){
     # Portfolio
-    r_oos <- r_p_oos[,k][r_p_oos[,k]!=0]
-    r_hat_oos <- r_hat_p_oos[,k][r_hat_p_oos[,k]!=0]
-    r_is <- r_p_is[,k][r_p_is[,k]!=0]
-    r_hat_is <- r_hat_p_is[,k][r_hat_p_is[,k]!=0]
+    r <- r_p[,k][r_p[,k]!=0]
+    r_hat <- r_hat_p[,k][r_hat_p[,k]!=0]
     
-    #print(length(r_hat_oos))
-    rsq.DPLS_port_is[k] <- 1 - (sum((r_is - r_hat_is)^2)/sum((r_is - mean(r_is))^2))
-    rsq.DPLS_port_oos[k] <- 1 - (sum((r_oos - r_hat_oos)^2)/sum((r_oos - mean(r_oos))^2))
-    
-    # All stocks
-    rsq.DPLS_is[k] <- 1 - rss_is[k]/tss_is[k]
-    rsq.DPLS_oos[k] <- 1 - rss_oos[k]/tss_oos[k]
+    if(bPortfolio){
+      rsq.DPLS[k] <- 1 - (sum((r - r_hat)^2)/sum((r - mean(r))^2))
+    }
+    else{
+      rsq.DPLS[k] <- 1 - rss[k]/tss[k]
+    }
   }
-  return(list(rsq.DPLS_is, rsq.DPLS_port_is, rsq.DPLS_oos, rsq.DPLS_port_oos))
+  return(round(rsq.DPLS,4)[1:15])
 }
 
 
@@ -130,7 +109,8 @@ table.DPLS <- function(Ks, T, t_0, port_size, Uhat_is_list, Uhat_oos_list, y_tra
 ### --------------- PLS --------------- ###
 
 
-table.PLS <- function(Ks, T, t_0, port_size, x_train_list, x_test_list, comp_num_list_PLS, bTest, bPortfolio){
+table.PLS <- function(T, t_0, port_size, x_train_list, x_test_list, comp_num_list_PLS, bTest, bPortfolio){
+  Ks <- seq(1,15)
   rsq.PLS <- rep(0,length(Ks))
   rss <- rep(0,length(Ks))
   tss <- rep(0,length(Ks))
@@ -150,8 +130,7 @@ table.PLS <- function(Ks, T, t_0, port_size, x_train_list, x_test_list, comp_num
       MSE[k] <- mean((Y_hat-Y)^2)
     }
     K_star <- which.min(MSE)
-    #print(K_star)
-    
+
     for (k in 1:K_star){
       if (bTest){
         Y_hat <- predict(fit, ncomp = k, newdata = test)[,1,]
@@ -186,7 +165,7 @@ table.PLS <- function(Ks, T, t_0, port_size, x_train_list, x_test_list, comp_num
       rsq.PLS[k] <- 1 - rss[k]/tss[k]
     }
   }
-  return(rsq.PLS)
+  return(round(rsq.PLS,4))
 }
 
 
@@ -194,12 +173,14 @@ table.PLS <- function(Ks, T, t_0, port_size, x_train_list, x_test_list, comp_num
 ### --------------- PCA --------------- ###
 
 
-table.PCA <- function(Ks, T, t_0, port_size, df.data, dates, bPortfolio){
+table.PCA <- function(T, t_0, port_size, x_train_list, dates, bPortfolio){
+  Ks <- seq(1,15)
   rsq.PCA <- rep(0,length(Ks))
-  df.y <- df.data[,50:51]
   y_<-list()
   for (t in 1:T){
-    y_[t]<-subset(df.y, date==dates[t_0+t]) # Xs return
+    train <- x_train_list[[t_0+t]]
+    y_train <- train[,50]
+    y_[[t]]<- y_train # Xs return
   }
   minN <-1000 
   
@@ -217,7 +198,6 @@ table.PCA <- function(Ks, T, t_0, port_size, df.data, dates, bPortfolio){
   N <- minN
   
   Y_train <- xts(Y_train, order.by=dates[(t_0+1):(t_0+T)]) # Transform to time series object 
-  Ks<-c(1,2,3,4,5,10,20,30,40)
   
   for (k in 1:length(Ks)){
     factor_model <- factorModel(Y_train, type = "S", K = Ks[k], max_iter = 10)
@@ -246,5 +226,5 @@ table.PCA <- function(Ks, T, t_0, port_size, df.data, dates, bPortfolio){
       
     }
   }
-  return(rsq.PCA)
+  return(round(rsq.PCA,4))
 }
