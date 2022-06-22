@@ -131,21 +131,6 @@ IR(t_0, T, Y_hat_oos_list, Yhat_LASSO_oos_list, Y_hat_oos_list_NN, Y_hat_PLS_oos
 ### --------------- Table  --------------- ###
 # Calculate the Table 1 of the paper
 
-Ks=seq(1,15)
-
-
-table.DPLS(Ks, T, t_0, port_size=40, Uhat_is_list, Uhat_oos_list, Ys_train, Ys_test, comp.num_list)
-table.PLS(Ks, T, t_0, port_size=40, Xs_train, Xs_test,  comp_num_list_PLS, bTest=FALSE, bPortfolio=FALSE)
-table.PLS(Ks, T, t_0, port_size=40, Xs_train, Xs_test, comp_num_list_PLS, bTest=FALSE, bPortfolio=TRUE)
-table.PLS(Ks, T, t_0, port_size=40, Xs_train, Xs_test, comp_num_list_PLS, bTest=TRUE, bPortfolio=FALSE)
-table.PLS(Ks, T, t_0, port_size=40, Xs_train, Xs_test, comp_num_list_PLS, bTest=TRUE, bPortfolio=TRUE)
-
-df.table <- table(Ks, T, t_0, port_size=40, df.data, 
-                  Uhat_is_list, Uhat_oos_list, Xs_train, Xs_test, Ys_train, Ys_test, comp.num_list)
-
-
-table.PCA(Ks, T, t_0, port_size=40, df.data, dates, bPortfolio=FALSE)
-table.PCA(Ks, T, t_0, port_size=40, df.data, dates, bPortfolio=TRUE)
-
+df.table <- table(T, t_0, port_size=40, Uhat_is_list, Uhat_oos_list, Xs_train, Xs_test, Ys_train, Ys_test, comp.num_list, dates)
 
 
