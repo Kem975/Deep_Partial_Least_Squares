@@ -9,31 +9,22 @@ T <- 120
 for (i in 1:T){ #(length(dates)-1)
   # Get the Data
   train = Xs_train[[t_0+i]]
-  test = Xs_test[[t_0+i]]
   
   x_train_original <- as.matrix(subset(train, select = -c(xs_return))) 
   y_train_original <- train$xs_return
   
-  x_test_original <- as.matrix(subset(test, select = -c(xs_return))) 
-  y_test_original <- test$xs_return
-  
-  plsr.input <- plsr(formula = xs_return~., data=train, rescale = F)
+  plsr.input <- plsr(formula = xs_return~., ncomp=max_k, data=train, rescale = F)
   PLS_Score.input <- scores(plsr.input)
   
   x_train <- as.matrix(train[,1:49]) %*% drop(plsr.input$loading.weights)
   y_train <- train$xs_return
   
-  x_test <- as.matrix(test[,1:49]) %*% drop(plsr.input$loading.weights) 
-  y_test <- test$xs_return
-  
   U_train <- as.matrix(train[,1:49]) %*% drop(plsr.input$coefficients)
   
-  #model.PLS <- load_model_tf(sprintf("Models/%s.h5", dates[i]))
   model.PLS <- keras_model_sequential() %>%
-    layer_dense(units = 100, activation = "softplus", input_shape = 49, kernel_initializer='normal') %>%
+    layer_dense(units = 100, activation = "softplus", input_shape = max_k, kernel_initializer='normal') %>%
     layer_dropout(rate = 0.5) %>%
-    layer_dense(units = 49, kernel_initializer='normal') 
-  #summary(model.PLS)
+    layer_dense(units = max_k, kernel_initializer='normal') 
   
   model.PLS %>% compile(loss = "mse", optimizer = "RMSprop")
   model.PLS %>% fit( x = x_train, y = U_train, verbose = 0, 
@@ -42,14 +33,15 @@ for (i in 1:T){ #(length(dates)-1)
                                                               patience = 30, 
                                                               min_delta = 1e-4))) #restore_best_weights = TRUE
   
-  #### Test
-  U_hat_is <- model.PLS %>% predict( x_train )
-  U_hat_oos <- model.PLS %>% predict( x_test )
+  #model.PLS %>% save_model_hdf5(sprintf("../data/Models_DPLS_49/%s.h5",dates[t_0+i]))
+  model.PLS <- load_model_tf(sprintf("../data/Models_DPLS/%s.h5", dates[t_0+i]))
   
+  U_hat_is <- model.PLS %>% predict( x_train )
+
   MSEs <- rep(0,max_k)
-  MSEs[1] <- mean((U_hat_oos[,1] - y_test)^2)
+  MSEs[1] <- mean((U_hat_is[,1] - y_train)^2)
   for (K in 2:max_k){
-    MSEs[K] <- mean((rowMeans(U_hat_oos[,1:K]) - y_test)^2)
+    MSEs[K] <- mean((rowMeans(U_hat_is[,1:K]) - y_train)^2)
   }
   comp.num_CV <- which.min(round(MSEs, 6))
   
@@ -58,14 +50,13 @@ for (i in 1:T){ #(length(dates)-1)
   }
   
   Y_hat_is <- rowMeans(U_hat_is[,1:comp.num_CV])
-  Y_hat_oos <- rowMeans(U_hat_oos[,1:comp.num_CV])
-  
+
   idx <- order(Y_hat_is)[length(Y_hat_is):1]
   w <- rep(0,length(Y_hat_is))
   w[idx[1:10]] <- 0.1
   
   
-  x_zeros_vect <- matrix(0, 1, dim(x_test)[2])
+  x_zeros_vect <- matrix(0, 1, dim(x_train)[2])
   intercept <- mean(model.PLS %>% predict( x_zeros_vect ))
   
   x <- tf$zeros(shape(1,dim(x_train)[2]))
@@ -87,7 +78,7 @@ for (i in 1:T){ #(length(dates)-1)
   J_0 <- colMeans(drop(as.array(dy_tf))[1:comp.num_CV,])
   
   d2y <- drop(as.array(d2y_tf))
-  H_0 <- matrix(0, nrow=49, ncol=49)
+  H_0 <- matrix(0, nrow=max_k, ncol=max_k)
   for (fact in 1:comp.num_CV){
     H_0 <- H_0 + d2y[fact,,]
   }
@@ -162,8 +153,8 @@ ggplot(df.histo_dicrete_DPLS_40) +
   #scale_y_continuous("Monthly Portfolio Return") + 
   scale_x_date("Date")#, date_breaks = "1 year", date_minor_breaks = "6 month")
 
-ggsave(file="figure/pdf/Risk_factors_DPLS.pdf", width=16.25, height=6.5, dpi=800)
-ggsave(file="figure/png/Risk_factors_DPLS.png", width=16.25, height=6.5)
+ggsave(file="../figure/pdf/Risk_factors_DPLS_saved.pdf", width=16.25, height=6.5, dpi=800)
+ggsave(file="../figure/png/Risk_factors_DPLS_saved.png", width=16.25, height=6.5)
 
 
 
