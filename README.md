@@ -6,15 +6,15 @@ The code is a working repository, still being tested, and subject to further cha
 
 ## Configuration 
 ### Anaconda
- - Anaconda environment configuration is in DPLS.yml
+- Install conda 4.12 or a later version
+- Anaconda environment configuration is in DPLS.yml
+- Create the conda virtual environment by typing ```conda env create -f DPLS.yml```
 
 ### R Packages
-- Install conda 4.12 or a later version
-- Create the conda virtual environment by typing ```conda env create -f DPLS.yml```
-- Link it to R: In RStudio: Tools > Global Options > Python > Select > Conda Environment
-- Once the anaconda environment is linked, you can download the Packrat packages bundle R here: https://www.dropbox.com/s/bahii8c5h2as0ip/DPLS-2022-06-14.tar.gz?dl=0
-- Then you use ```packrat::unbundle``` and ```packrat::restore``` to get the packages
-
+- Link the anaconda environment to R: In RStudio: Tools > Global Options > Python > Select > Conda Environment
+- Download this ```packrat.zip``` file: https://www.dropbox.com/s/22s16fdetusplxq/packrat.zip?dl=0
+- Unzip it in the ```src``` folder
+- Run the first 3 lines of ```src/main.r``` to obtain the R packages
 
 ## Source Code
 The repository contains one main file: main.R, which calls functions in other files.
@@ -27,6 +27,7 @@ Tensorflow saved models are needed to use automatic differentiation. If you do n
 ## Data
 The factor data has been collected from a financial data vendor and santized to avoid violation of data licensing agreement and non-commercial utility. The data, for non-commercial use only, can be downloaded from: https://www.dropbox.com/s/4o86a3p2n7kawst/ScaledData.RData?dl=0
 
+Then, move ScaledData.RData to the data folder.
 
 The actual symbols have been remapped and the factors have been normalized in each period. The stocks are characterized by GICS and use dummy variables to represent the four difference catergories:
 
