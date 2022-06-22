@@ -13,6 +13,8 @@ devtools::install_github("dppalomar/covFactorModel")
 require("covFactorModel")
 require("xts")
 
+
+setwd("./src")
 source("get_data.R")
 source("train_DPLS.R")
 source("train_LASSO.R")
@@ -29,15 +31,7 @@ source("plot_sensitivities.R")
 set_random_seed(10)
 # download this data from
 # https://www.dropbox.com/s/5l6ufcxosc7pv6l/Data.csv?dl=0
-#df.data <- read.csv("../data/Data.csv")
 
-#dates <- unique(as.Date(df.data$date))
-#dates <- na.omit(dates)
-df.data <- c()
-df.data$X <- c()
-
-# This next line takes approximately ten minutes to execute
-# list.data <- get_all_data(df.data, dates) # Rescaling of the data
 list.data<-readRDS("../data/ScaledData.RData")
 
 Xs_train <- list.data[[1]]
