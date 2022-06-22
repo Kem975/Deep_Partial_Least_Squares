@@ -6,8 +6,9 @@
 # Output: Y_hat
 
 load_NN <- function(t_0, T, Xs_train, Xs_test, dates, bRetrain=FALSE, bSensitivities=FALSE){
-  betas_matrix <- array(0, c(T,49))
-  betas_interact_matrix <- array(0, c(T, 49, 49))
+  nfactor <- 49
+  betas_matrix <- array(0, c(T,nfactor))
+  betas_interact_matrix <- array(0, c(T, nfactor, nfactor))
   
   Y_hat_is_list_NN <- list()
   Y_hat_oos_list_NN <- list()
@@ -35,8 +36,8 @@ load_NN <- function(t_0, T, Xs_train, Xs_test, dates, bRetrain=FALSE, bSensitivi
     # If the user wants to train and use a new model
     if(bRetrain==TRUE){
       model <- keras_model_sequential() %>%
-        layer_dense(units = 100, activation = "softplus", input_shape = 49, kernel_initializer='normal') %>%
-        layer_dropout(rate = 0.5) %>%
+        layer_dense(units = 100, activation = "softplus", input_shape = nfactor, kernel_initializer='normal') %>%
+        layer_dropout(rate = 0.0) %>%
         layer_dense(units = 1, kernel_initializer='normal') 
       
       model %>% compile(loss = "mse", optimizer = "RMSprop")

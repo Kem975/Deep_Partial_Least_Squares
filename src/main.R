@@ -1,3 +1,7 @@
+setwd("./src")
+install.packages("packrat")
+packrat::restore()
+
 list.of.packages <- c("keras", "Rcpp", "devtools", "tensorflow", "pls", "xts", "corrplot", "latex2exp", "ggplot2", "glmnet")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -14,7 +18,6 @@ require("covFactorModel")
 require("xts")
 
 
-setwd("./src")
 source("get_data.R")
 source("train_DPLS.R")
 source("train_LASSO.R")
